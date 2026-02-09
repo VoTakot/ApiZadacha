@@ -54,13 +54,27 @@ class GameView(arcade.Window):
     def on_key_press(self, key, modifiers):
         if key == arcade.key.PAGEUP: # из-за того что кнопка на нумпаде не работает
             self.z = str(min(int(self.z) + 1, 21))
-            self.get_image()
         elif key == arcade.key.PAGEDOWN: # из-за того что кнопка на нумпаде не работает
             self.z = str(max(int(self.z) - 1, 0))
-            self.get_image()
+        elif key == arcade.key.UP:
+            longitude, lattitude = list(map(float, self.ll.split(',')))
+            lattitude = str(min(float(lattitude) + 0.05 * (21 - int(self.z)), 90))
+            self.ll = ','.join([str(longitude), str(lattitude)])
+        elif key == arcade.key.DOWN:
+            longitude, lattitude = list(map(float, self.ll.split(',')))
+            lattitude = str(max(float(lattitude) - 0.05 * (21 - int(self.z)), -90))
+            self.ll = ','.join([str(longitude), str(lattitude)])
+        elif key == arcade.key.RIGHT:
+            longitude, lattitude = list(map(float, self.ll.split(',')))
+            longitude = str(min(float(longitude) + 0.05 * (21 - int(self.z)), 180))
+            self.ll = ','.join([str(longitude), str(lattitude)])
+        elif key == arcade.key.LEFT:
+            longitude, lattitude = list(map(float, self.ll.split(',')))
+            longitude = str(max(float(longitude) - 0.05 * (21 - int(self.z)), -180))
+            self.ll = ','.join([str(longitude), str(lattitude)])
 
- #   def on_update(self, delta_time):
-       # self.get_image()
+    def on_update(self, delta_time):
+        self.get_image()
 
 
 def main():
