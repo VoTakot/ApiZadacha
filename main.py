@@ -11,7 +11,7 @@ MAP_FILE = "map.png"
 
 class GameView(arcade.Window):
     def setup(self):
-        self.z = '10'
+        self.z = 10
         self.ll = '73.088504,49.807760'
         self.get_image()
 
@@ -50,6 +50,17 @@ class GameView(arcade.Window):
             file.write(response.content)
 
         self.background = arcade.load_texture(MAP_FILE)
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.PAGEUP: # из-за того что кнопка на нумпаде не работает
+            self.z = str(min(int(self.z) + 1, 21))
+            self.get_image()
+        elif key == arcade.key.PAGEDOWN: # из-за того что кнопка на нумпаде не работает
+            self.z = str(max(int(self.z) - 1, 0))
+            self.get_image()
+
+ #   def on_update(self, delta_time):
+       # self.get_image()
 
 
 def main():
