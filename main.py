@@ -2,6 +2,8 @@ import os
 import sys
 import requests
 import arcade
+from arcade.gui import UIManager, UIFlatButton
+from arcade.gui.widgets.layout import UIAnchorLayout, UIBoxLayout
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -11,9 +13,37 @@ MAP_FILE = "map.png"
 
 class GameView(arcade.Window):
     def setup(self):
+        self.theme = 'dark'
         self.z = 10
         self.ll = '73.088504,49.807760'
         self.get_image()
+        self.manager = UIManager()
+        self.manager.enable()
+
+        self.anchor_layout = UIAnchorLayout()
+        self.box_layout = UIBoxLayout(vertical=False, space_between=10)
+
+        self.anchor_layout.add(self.box_layout)
+        self.manager.add(self.anchor_layout)
+        self.anchor_layout.center_x += self.width // 2 - 200
+        self.anchor_layout.center_y += self.height // 2 - 80
+
+        light_theme_btn = UIFlatButton(width=200,
+                                      height=100,
+                                      text='Светлая')
+        light_theme_btn.on_click = self.set_light_theme
+        self.box_layout.add(light_theme_btn)
+        dark_theme_btn = UIFlatButton(width=200,
+                                      height=100,
+                                      text='Тёмная')
+        dark_theme_btn.on_click = self.set_dark_theme
+        self.box_layout.add(dark_theme_btn)
+
+    def set_dark_theme(self, event):
+        self.theme = 'dark'
+
+    def set_light_theme(self, event):
+        self.theme = 'light'
 
     def on_draw(self):
         self.clear()
@@ -27,6 +57,7 @@ class GameView(arcade.Window):
                 self.background.height
             ),
         )
+        self.manager.draw()
 
     def get_image(self):
         server_address = 'https://static-maps.yandex.ru/v1?'
@@ -34,7 +65,8 @@ class GameView(arcade.Window):
         params = {
             'll': self.ll,
             'apikey': api_key,
-            'z': self.z
+            'z': self.z,
+            'theme': self.theme
         }
 
         response = requests.get(server_address, params)
